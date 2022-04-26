@@ -1,6 +1,8 @@
 const http = require("http");
 const mongoose = require("mongoose");
 const POST = require("./models/posts");
+const express = require("express");
+const app = express();
 
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
@@ -10,7 +12,9 @@ dotenv.config({ path: "./config.env" });
 const error = require("./Handlers/errorHandle");
 const success = require("./Handlers/successHandle");
 
-const router = require("./routes/posts");
+const posts = require("./routes/posts");
+
+app.use("/posts",posts);
 
 //設定資料庫資料
 const DB = process.env.MONGODB.replace('<password>', process.env.PW);
@@ -26,7 +30,10 @@ const requestListener = async function (req, res) {
     router(req,res);
 }
 
-//建立 server
-const server = http.createServer(requestListener);
+////建立 server
+// const server = http.createServer(requestListener);
 
-server.listen(process.env.PORT || process.env.SERVERPORT);
+// server.listen(process.env.PORT || process.env.SERVERPORT);
+
+
+app.listen(process.env.PORT || process.env.SERVERPORT);
