@@ -7,14 +7,12 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
-
-
 const error = require("./Handlers/errorHandle");
 const success = require("./Handlers/successHandle");
 
 const posts = require("./routes/posts");
 
-app.use("/posts",posts);
+app.use("/posts", posts);
 
 //設定資料庫資料
 const DB = process.env.MONGODB.replace('<password>', process.env.PW);
@@ -26,9 +24,9 @@ mongoose.connect(DB)
     .catch((error) => {
         console.log(error);
     })
-const requestListener = async function (req, res) {
-    router(req,res);
-}
+// const requestListener = async function (req, res) {
+//     router(req,res);
+// }
 
 ////建立 server
 // const server = http.createServer(requestListener);

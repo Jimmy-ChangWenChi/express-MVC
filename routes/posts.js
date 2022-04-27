@@ -1,22 +1,71 @@
 const express = require("express");
 const router = express.Router();
-const app = express();
 const error = require("../Handlers/errorHandle")
 const success = require("../Handlers/successHandle");
 const POST = require("../models/posts")
 const Header = require("../Header/Headers");
 
-router.get("/", (req,res)=>{
+router.get("/", async (req,res)=>{
     const allPosts = await POST.find();
-    res.status(200).JSON({
+    res.status(200).json({
+        "status":"success",
+        "message":"Search done",
         allPosts
     })
 })
 
-router.delete("/",(req,res)=>{
+router.delete("/", async (req,res)=>{
     const allPosts = await POST.deleteMany({})
+    res.status(200).json({
+        "status":"success",
+        "message":"Delete done",
+        allPosts
+    })
 })
 
+router.post("/",async (req,res)=>{
+    try{
+        const data = req.body;
+        if(data.name !== undefined || data.tags !== undefined || data.content !== undefined){
+            const newPost = await POST.create(data);
+            res.status(200).json({
+                "status":"success",
+                "message":"Create done",
+                newPost
+            })
+        }else{
+            res.status(400).json({
+                "status":"false",
+                "message":"欄位有誤",
+            })
+        }
+    }catch(err){
+        res.status(200).json({
+            "status":"false",
+            "message":err,
+        })
+    }
+})
+
+router.patch("/:id", async (req,res)=>{
+    const id = req.params.id;
+    let data = req.body;
+    if(data.name !== undefined || data.tags !== undefined || data.content !== undefined){
+        const editPost = await POST.findByIdAndUpdate(data);
+        res.status(200).json({
+            "status":"success",
+            "message":"update done",
+            editPost
+        })
+    }else{
+        res.status(400).json({
+            "status":"false",
+            "message":"欄位有誤",
+        })
+    }
+})
+
+module.exports = router;
 
 // const router = async function (req, res) {
 //     let body = "";
@@ -88,5 +137,3 @@ router.delete("/",(req,res)=>{
 //         error(res, "找不到路由");
 //     }
 // }
-
-module.exports = router;
