@@ -12,6 +12,9 @@ const success = require("./Handlers/successHandle");
 
 const posts = require("./routes/posts");
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use("/posts", posts);
 
 //設定資料庫資料
@@ -33,5 +36,5 @@ mongoose.connect(DB)
 
 // server.listen(process.env.PORT || process.env.SERVERPORT);
 
-
+//app.listen(process.env.SERVERPORT);
 app.listen(process.env.PORT || process.env.SERVERPORT);
