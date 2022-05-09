@@ -7,10 +7,10 @@ const postSchema = new mongoose.Schema(
             type:String,
             required:[true,"姓名未填寫"]
         },*/
-        nameid:{
-            type:mongoose.Schema.ObjectId,
-            ref:"users",
-            required:[true,"ID 未填寫"]
+        user:{
+            type: mongoose.Schema.ObjectId,
+            ref:"user",
+            required:[true,"名稱未填寫"]
         },
         tags:{
             type:String,
