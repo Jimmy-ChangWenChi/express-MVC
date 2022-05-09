@@ -3,72 +3,27 @@ const router = express.Router();
 const error = require("../Handlers/errorHandle")
 const success = require("../Handlers/successHandle");
 const POST = require("../models/posts")
+const USER = require("../models/users")
 const Header = require("../Header/Headers");
 
+//第四週作業
 router.get("/", async (req, res) => {
-    const allPosts = await POST.find();
+    const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"
+    const q = req.query.q !== undefined ? { "content": new RegExp(req.query.q) } : {};
+    const allPosts = await Post.find(q).populate({
+        path: 'users',
+        select: 'name'
+    }).sort(timeSort);
+    // asc 遞增(由小到大，由舊到新) createdAt ; 
+    // desc 遞減(由大到小、由新到舊) "-createdAt"
+
     res.status(200).json({
         "status": "success",
         "message": "Search done",
-        allPosts
+        data: allPosts
     })
-    //console.log("success")
+
 })
-
-router.delete("/", async (req, res) => {
-    await POST.deleteMany();
-    const allPosts = await POST.find()
-    res.status(200).json({
-        "status": "success",
-        "message": "Delete done",
-        allPosts
-    })
-})
-router.delete("/:id", async (req, res) => {
-    const id = req.params.id;
-    await POST.findByIdAndDelete(id)
-    const allPosts = await POST.find();
-    res.status(200).json({
-        "status": "success",
-        "message": "Delete id Done",
-        "All Data": allPosts
-    })
-})
-
-// 寫在一起, 在delete全部的時候,網頁會crash,還找不到原因
-
-// router.delete("/:id", async (req, res) => {
-//     try {
-//         console.log(req.params)
-//         const id = req.params.id;
-
-//         console.log(id);
-//         if (id !== "posts") {
-//             console.log(1);
-//             await POST.findByIdAndDelete(id);
-//             const allPosts = await POST.find();
-//             res.status(200).json({
-//                 "status": "success",
-//                 "message": "Delete id Done",
-//                 "All Data": allPosts
-//             })
-//         } else {
-
-//             console.log(2);
-//             await POST.deleteMany()
-//             const allPosts = await POST.find();
-//             res.status(200).json({
-//                 "status": "success",
-//                 "message": "Delete done",
-//                 allPosts
-//             })
-//         }
-//     } catch (err) {
-//         res.status(400).json({
-//             err
-//         })
-//     }
-// })
 
 router.post("/", async (req, res) => {
     try {
@@ -80,8 +35,8 @@ router.post("/", async (req, res) => {
         否則沒有req.body的資料
         */
 
-        console.log(data);
-        if (data.name !== undefined || data.tags !== undefined || data.content !== undefined) {
+        //console.log(data);
+        if (data.content !== undefined) {
             const newPost = await POST.create(data);
             res.status(200).json({
                 "status": "success",
@@ -101,28 +56,129 @@ router.post("/", async (req, res) => {
         })
     }
 })
+//第四週作業
 
-router.patch("/:id", async (req, res) => {
-    const id = req.params.id;
-    let data = req.body;
-    if (data.name !== undefined || data.tags !== undefined || data.content !== undefined) {
-        await POST.findByIdAndUpdate(id, data);
-        editPost = await POST.findById(id)
-        res.status(200).json({
-            "status": "success",
-            "message": "update done",
-            editPost
-        })
-    } else {
-        res.status(400).json({
-            "status": "false",
-            "message": "欄位有誤",
-        })
-    }
-})
+
+//第三週作業
+// router.get("/", async (req, res) => {
+//     const allPosts = await POST.find();
+//     res.status(200).json({
+//         "status": "success",
+//         "message": "Search done",
+//         allPosts
+//     })
+//     //console.log("success")
+// })
+
+// router.delete("/", async (req, res) => {
+//     await POST.deleteMany();
+//     const allPosts = await POST.find()
+//     res.status(200).json({
+//         "status": "success",
+//         "message": "Delete done",
+//         allPosts
+//     })
+// })
+// router.delete("/:id", async (req, res) => {
+//     const id = req.params.id;
+//     await POST.findByIdAndDelete(id)
+//     const allPosts = await POST.find();
+//     res.status(200).json({
+//         "status": "success",
+//         "message": "Delete id Done",
+//         "All Data": allPosts
+//     })
+// })
+
+// // 如果要寫在一起, 需要在server.js 呼叫兩次, 才能判斷
+// // router.delete("/:id", async (req, res) => {
+// //     try {
+// //         console.log(req.params)
+// //         const id = req.params.id;
+
+// //         console.log(id);
+// //         if (id !== "posts") {
+// //             console.log(1);
+// //             await POST.findByIdAndDelete(id);
+// //             const allPosts = await POST.find();
+// //             res.status(200).json({
+// //                 "status": "success",
+// //                 "message": "Delete id Done",
+// //                 "All Data": allPosts
+// //             })
+// //         } else {
+
+// //             console.log(2);
+// //             await POST.deleteMany()
+// //             const allPosts = await POST.find();
+// //             res.status(200).json({
+// //                 "status": "success",
+// //                 "message": "Delete done",
+// //                 allPosts
+// //             })
+// //         }
+// //     } catch (err) {
+// //         res.status(400).json({
+// //             err
+// //         })
+// //     }
+// // })
+
+// router.post("/", async (req, res) => {
+//     try {
+//         const data = req.body;
+//         //console.log(req)
+//         /*如要使用req.body 必須在server.js 加入
+//         app.use(express.json());
+//         app.use(express.urlencoded({ extended: false }));
+//         否則沒有req.body的資料
+//         */
+
+//         console.log(data);
+//         if (data.name !== undefined || data.tags !== undefined || data.content !== undefined) {
+//             const newPost = await POST.create(data);
+//             res.status(200).json({
+//                 "status": "success",
+//                 "message": "Create done",
+//                 newPost
+//             })
+//         } else {
+//             res.status(400).json({
+//                 "status": "false",
+//                 "message": "欄位有誤",
+//             })
+//         }
+//     } catch (err) {
+//         res.status(200).json({
+//             "status": "false",
+//             "message": err,
+//         })
+//     }
+// })
+
+// router.patch("/:id", async (req, res) => {
+//     const id = req.params.id;
+//     let data = req.body;
+//     if (data.name !== undefined || data.tags !== undefined || data.content !== undefined) {
+//         await POST.findByIdAndUpdate(id, data);
+//         editPost = await POST.findById(id)
+//         res.status(200).json({
+//             "status": "success",
+//             "message": "update done",
+//             editPost
+//         })
+//     } else {
+//         res.status(400).json({
+//             "status": "false",
+//             "message": "欄位有誤",
+//         })
+//     }
+// })
+//第三週作業
 
 module.exports = router;
 
+//第二週作業
 // const router = async function (req, res) {
 //     let body = "";
 //     req.on("data", chuck => {
@@ -193,3 +249,4 @@ module.exports = router;
 //         error(res, "找不到路由");
 //     }
 // }
+//第二週作業

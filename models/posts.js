@@ -1,10 +1,16 @@
 const mongoose = require("mongoose");
 
-const schema = new mongoose.Schema(
+const postSchema = new mongoose.Schema(
     {
+        /*
         name:{
             type:String,
             required:[true,"姓名未填寫"]
+        },*/
+        nameid:{
+            type:mongoose.Schema.ObjectId,
+            ref:"users",
+            required:[true,"ID 未填寫"]
         },
         tags:{
             type:String,
@@ -30,6 +36,6 @@ const schema = new mongoose.Schema(
     }
 )
 
-const POST = mongoose.model("posts",schema)
+const POST = mongoose.model("posts",postSchema)
 
 module.exports = POST;
