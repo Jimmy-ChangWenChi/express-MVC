@@ -8,12 +8,16 @@ const Header = require("../Header/Headers");
 
 //第四週作業
 router.get("/", async (req, res) => {
-    //const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"
-    //const q = req.query.q !== undefined ? { "content": new RegExp(req.query.q) } : {};
-    const allPosts = await POST.find().populate({
+    const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"
+    const q = req.query.q !== undefined ? { "content": new RegExp(req.query.q) } : {}; //q是url的參數
+    //http://localhost:3005/posts?q=For
+    //const q = req.query.content !== undefined ? { "content": new RegExp(req.query.content) } : {}; 
+    //是url的參數, http://localhost:3005/posts?content=For
+    //console.log(q);
+    const allPosts = await POST.find(q).populate({
         path: "user",
         select: "name"
-    })//.sort(timeSort);
+    }).sort(timeSort);
     // asc 遞增(由小到大，由舊到新) createdAt ; 
     // desc 遞減(由大到小、由新到舊) "-createdAt"
 
@@ -35,7 +39,7 @@ router.post("/", async (req, res) => {
         否則沒有req.body的資料
         */
 
-        console.log(data);
+        //console.log(data);
         if (data.content !== undefined) {
             const newPost = await POST.create(data);
             res.status(200).json({
