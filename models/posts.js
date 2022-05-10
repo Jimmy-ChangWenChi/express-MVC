@@ -2,19 +2,9 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema(
     {
-        /*
-        name:{
-            type:String,
-            required:[true,"姓名未填寫"]
-        },*/
-        user:{
-            type: mongoose.Schema.ObjectId,
-            ref:"user",
-            required:[true,"名稱未填寫"]
-        },
-        tags:{
-            type:String,
-            required:[true,"tags 未填寫"]
+        username:{
+            type:mongoose.Schema.ObjectId,
+            ref:'users'
         },
         content:{
             type:String,
@@ -25,10 +15,10 @@ const postSchema = new mongoose.Schema(
             default:Date.now,
             select:false
         },
-        likes:{
-            type:Number,
-            default:0
-        }
+        image:{
+            type:String,
+            default:''
+        },
     },
     {
         versionKey:false,
@@ -36,6 +26,6 @@ const postSchema = new mongoose.Schema(
     }
 )
 
-const POST = mongoose.model("posts",postSchema)
+const POST = mongoose.model("posts",schema)
 
 module.exports = POST;
