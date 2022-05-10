@@ -30,7 +30,9 @@ router.get("/", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
+    console.log(11);
     try {
+        console.log(1);
         const data = req.body;
         //console.log(req)
         /*如要使用req.body 必須在server.js 加入
@@ -39,8 +41,8 @@ router.post("/", async (req, res) => {
         否則沒有req.body的資料
         */
 
-        //console.log(data);
-        if (data.content !== undefined) {
+        console.log(data);
+        if (data.content !== undefined ||data.user !== undefined) {
             const newPost = await POST.create(data);
             res.status(200).json({
                 "status": "success",
@@ -48,18 +50,21 @@ router.post("/", async (req, res) => {
                 newPost
             })
         } else {
+            console.log(2);
             res.status(400).json({
                 "status": "false",
                 "message": "欄位有誤",
             })
         }
     } catch (err) {
+        console.log(3);
         res.status(200).json({
             "status": "false",
             "message": err,
         })
     }
 })
+module.exports = router;
 //第四週作業
 
 
@@ -178,9 +183,8 @@ router.post("/", async (req, res) => {
 //         })
 //     }
 // })
+// module.exports = router;
 //第三週作業
-
-module.exports = router;
 
 //第二週作業
 // const router = async function (req, res) {
