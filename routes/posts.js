@@ -15,11 +15,11 @@ router.get("/", async (req, res) => {
     //是url的參數, http://localhost:3005/posts?content=For
     //console.log(q);
     const allPosts = await POST.find(q).populate({
-        path: "user",
+        path: "user", // POST的user欄位
         select: "name"
     }).sort(timeSort);
     // asc 遞增(由小到大，由舊到新) createdAt ; 
-    // desc 遞減(由大到小、由新到舊) "-createdAt"
+    // desc 遞減(由大到小、由新到舊) "-createdAt"
 
     res.status(200).json({
         "status": "success",
